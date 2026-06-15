@@ -8,6 +8,9 @@ import cv2
 # numpy import, to handle images as a matrix
 import numpy as np
 
+# import detect_a4 function from a4_detection.py
+from app.services.a4_detection import detect_a4
+
 
 # Function receives image's raw data
 def process_image(image_bytes):
@@ -57,8 +60,14 @@ def process_image(image_bytes):
     height, width = image.shape[:2]
 
 
+    # Run A4 detection module
+    # Checks if image contains something that looks like A4 paper
+    a4_result = detect_a4(image)
+
+
     #return image measurements to API
     return {
         "height": height,
-        "width": width
+        "width": width,
+        "a4_detection": a4_result
     }
