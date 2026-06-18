@@ -1,24 +1,25 @@
 # app/routes/upload.py
 # Upload route for images endpoint
-# upload.py handles the API side (HTTP requests)
+# This endpoint returns JSON data, no visual debug image --> this was the first draft aka skeleton
 
-# APIRouter = splits API into parts (mini API)
+
+# APIRouter groups related endpoints into a separate route file
 # UploadFile = FastAPI way to handle right format files
-# File = Tells this is filefield
-from fastapi import APIRouter, UploadFile, File
+# File tells FastAPI that the file is required
+# HTTPException lets us return proper HTTP error responses
+from fastapi import APIRouter, UploadFile, File, HTTPException
 
-# importing function process_image from app/services/image_pricessing.py
+# process_image contains the actual image decoding and A4 detection pipeline
 from app.services.image_processing import process_image
 
 
-# Creating routes (router) where endpoints are added
+# Create a router for this file
+# main.py imports and registers this router with the FastAPI app
 router = APIRouter()
 
-
-# Defining POST end point /upload
-# Activates when user sends picture
+# Create a POST endpoint at /upload
+# The function below runs when the user uploads an image to this endpoint
 @router.post("/upload")
-
 
 # async for function --> asynchronous function can wait in the background --> allowing rest of the code to keep running
 # def upload_image is executed when endpoint is called
@@ -26,11 +27,51 @@ router = APIRouter()
 # = File(...)tells that this comes from HTTP request's file field
 async def upload_image(file: UploadFile = File(...)):
 
-    # read image data into bits
+
+    # Only allow image formats OpenCV can reasonably decode in this project
+    # JPEG and PNG are common phone/web formats
+    # WEBP is included just in case because some browsers and phones may produce it
+    ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp"}
+    if file.content_type not in ALLOWED_TYPES:
+        raise HTTPException(
+            status_code=415,
+            detail=f"Unsupported file type: {file.content_type}. Allowed: jpeg, png, webp"
+        )
+    
+    # Read the uploaded file bytes asynchronously
     contents = await file.read()
 
-    # sending picture for OpenCV
-    result = process_image(contents)
 
-    # returning result into the frontend (swagger)
+    # Empty uploads cannot be decoded as images
+    # 400 means the request itself is invalid
+    if not contents:
+        raise HTTPException(
+            status_code=400,
+            detail="Uploaded file is empty"
+        )
+
+    # Run the image-processing pipeline
+    # The try/except prevents unexpected backend crashes from becoming unclear errors
+    try:
+        result = process_image(contents)
+    except Exception as e:
+        # Print the technical error to the server console for debugging
+        print(f"DEBUG - process_image error: {e}")
+
+        # Return a clear API error to the client
+        # 500 means the server failed while processing a valid request
+        raise HTTPException(
+            status_code=500,
+            detail=f"Image processing failed: {str(e)}"
+        )
+
+    # if process_image returns error without raising an exception
+    # 422 means the uploaded file was understood, but could not be processed as expected
+    if "error" in result:
+        raise HTTPException(
+            status_code=422,
+            detail=result["error"]
+        )
+    
+    # Return the successful JSON result to the caller
     return result

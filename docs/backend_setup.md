@@ -12,6 +12,10 @@
 
   ```.\venv\Scripts\activate```
 
+  ### Shutdown the virtual environment:
+
+  ``` deactivate ```
+
   ## 4. Install required depedencies
 
   ```pip install -r requirements.txt```
@@ -25,4 +29,17 @@
   > Use command:
   ```Install dependencies: pip install fastapi uvicorn python-multipart opencv-python numpy```
 
-  
+  ## 5. Start the server:
+
+  ``` uvicorn app.main:app --reload ```
+
+  ### Shutdown the server:
+
+  ``` Ctrl + C ```
+
+## 6. After starting the server, ppen browser and go to http://127.0.0.1:8000/docs
+
+> Here you can test uploading image using POST /upload image
+> POST /upload/debug you can use to upload image and in return if A4 found = true U will get JPEG image where A4 paper is surrounded with green outlay + image quality measurements
+> POST /upload/warp-debug you can use to return straightened "crop" of the A4 paper if it was found in the image. This feature is a good addition for future development.
+
