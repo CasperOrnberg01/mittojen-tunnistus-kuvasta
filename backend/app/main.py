@@ -16,7 +16,9 @@ from app.routes.upload_debug import router as debug_router
 # This endpoint returns the straightened A4 image
 from app.routes.upload_warp_debug import router as warp_debug_router
 
-
+# import compare debug route !THIS CHANGE MADE 25.6.26!
+# This endpoint returns original detection view and warped A4 view side by side
+from app.routes.upload_compare_debug import router as compare_debug_router
 
 # Create FastAPI-app
 # Setting title for Swagger UI
@@ -33,6 +35,9 @@ app.include_router(debug_router)
 # added A4 debug endpoint, this makes POST /upload/debug avaoilable in swagger
 app.include_router(warp_debug_router)
 
+#!THIS CHANGE MADE 25.6.26!
+# register compare debug endpoint, this makes POST /upload/compare-debug available in swagger
+app.include_router(compare_debug_router)
 
 # Define GET endpoint for root URL
 @app.get("/")

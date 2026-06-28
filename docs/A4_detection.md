@@ -55,6 +55,8 @@
 
 This was fixed by trying out different approaches such as ```cv2.RETR_LIST```. This returns both outer and inner contours (shapes).
 
+I also felt necessary to spend extra time on commenting files so it is easier to catch any flaws in the logic in the future, easier to develop further and also for the rest of the group to catch what exactly does what and why.
+
 
 #### Backend Architecture
 
