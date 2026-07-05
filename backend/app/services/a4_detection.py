@@ -1,7 +1,7 @@
 # app/services/a4_detection.py
 # A4 paper sheet detection logic
 # this file tries to find an A4 sized rectangle from an uploaded image
-
+# Note for future developments!! note changes clearly
 
 import cv2
 import numpy as np
@@ -32,7 +32,7 @@ def order_corners(pts):
     # The safer approach is:
     # 1. Find the center of the four points.
     # 2. Sort all points around that center by angle.
-    # 3. Rotate the ordered list so the first point is the image-space top-left corner.
+    # 3. Rotate the ordered list so the first point is the image space top-lft corner
     center = np.mean(pts, axis=0)
     angles = np.arctan2(pts[:, 1] - center[1], pts[:, 0] - center[0])
     ordered = pts[np.argsort(angles)]

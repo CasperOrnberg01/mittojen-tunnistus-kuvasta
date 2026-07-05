@@ -5,8 +5,13 @@ Download the MediaPipe Hand Landmarker model from the official Google AI Edge Me
 Download the file, and you can basically just paste the file in backend/app/models/ folder
 
 Save it in:
+`backend/app/models/`
+
+AS: 
 
 `backend/app/models/hand_landmarker.task`
 
 Size is about 7.8 MB
 
+
+Notes: If problems encountered, think of pushing the model
