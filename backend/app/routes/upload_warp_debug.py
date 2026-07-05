@@ -10,7 +10,7 @@ from fastapi.responses import Response  # Response lets this route return JPEG b
 from app.services.a4_detection import detect_a4  # detect_a4 finds the paper and returns its corner coordinates
 
 # warp_a4 performs perspective correction
-# get_scale_px_per_mm returns useful measurement scale metadata
+# get_scale_px_per_mm returns useful measurement scale meta data
 from app.services.a4_warp import warp_a4, get_scale_px_per_mm, get_a4_orientation 
 
 from app.services.debug_overlay import encode_image_jpeg # encode_image_jpeg converts the warped OpenCV image into browser readable JPEG bytes
@@ -20,7 +20,7 @@ router = APIRouter()
 
 # Create a POST endpoint at /upload/warp-debug
 # responses documents the output as image/jpeg in Swagger
-# response_class=Response prevents FastAPI from converting the result to JSON
+# response_class=Response prevents FastAPI from converting result to JSON
 @router.post(
     "/upload/warp-debug",
     responses={200: {"content": {"image/jpeg": {}}}},
@@ -69,7 +69,7 @@ async def upload_warp_debug(file: UploadFile = File(...)):
     a4_result = detect_a4(image)
     
     # Stop if A4 was not found or corners are missing
-    # 422 is used because the image was valid, but it does not contain usable A4 data
+    # 422 is used because image was valid, but it does not contain usable A4 data
     if not a4_result.get("a4_found") or "corners_px" not in a4_result:
         raise HTTPException(
             status_code=422,

@@ -20,6 +20,14 @@ from app.routes.upload_warp_debug import router as warp_debug_router
 # This endpoint returns original detection view and warped A4 view side by side
 from app.routes.upload_compare_debug import router as compare_debug_router
 
+#App hand segment testing!!
+# Import MediaPipe hand landmark debug route
+# This endpoint returns the warped A4 image with detected hand landmarks drawn on top
+from app.routes.upload_hand_landmarks_debug import router as hand_landmarks_debug_router
+
+from app.routes.upload_hand_landmarks_manual_debug import router as hand_landmarks_manual_debug_router
+#App hand segment testing!! ends
+
 # Create FastAPI-app
 # Setting title for Swagger UI
 app = FastAPI(
@@ -38,6 +46,16 @@ app.include_router(warp_debug_router)
 #!THIS CHANGE MADE 25.6.26!
 # register compare debug endpoint, this makes POST /upload/compare-debug available in swagger
 app.include_router(compare_debug_router)
+
+
+#App hand segment testing!!
+# Register MediaPipe hand landmark debug endpoint
+# Makes POST /upload/hand-landmarks-debug available in Swagger
+app.include_router(hand_landmarks_debug_router)
+
+app.include_router(hand_landmarks_manual_debug_router)
+#App hand segment testing!! ends
+
 
 # Define GET endpoint for root URL
 @app.get("/")

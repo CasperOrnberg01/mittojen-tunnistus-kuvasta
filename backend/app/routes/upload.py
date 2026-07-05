@@ -50,8 +50,8 @@ async def upload_image(file: UploadFile = File(...)):
             detail="Uploaded file is empty"
         )
 
-    # Run the image-processing pipeline
-    # The try/except prevents unexpected backend crashes from becoming unclear errors
+    # Run the image processing pipeline
+    # The tryexcept prevents unexpected backend crashes from becoming unclear errors
     try:
         result = process_image(contents)
     except Exception as e:

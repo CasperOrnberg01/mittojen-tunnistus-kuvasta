@@ -81,6 +81,9 @@ def draw_a4_overlay(image, a4_result, quality_result=None):
         info_lines = [
             f"A4 FOUND",
 
+            # detection_method shows whether the normal contour detector or fallback detector found the A4
+            f"Method: {a4_result.get('detection_method', 'contour')}",
+
             # approx_ratio should be near 1.414 for A4
             f"Ratio: {a4_result.get('approx_ratio', 0):.3f} (target 1.414)",
 
