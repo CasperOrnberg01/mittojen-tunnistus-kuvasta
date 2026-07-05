@@ -1,4 +1,5 @@
 # app/routes/upload.py
+
 # Upload route for images endpoint
 # This endpoint returns JSON data, no visual debug image --> this was the first draft aka skeleton
 

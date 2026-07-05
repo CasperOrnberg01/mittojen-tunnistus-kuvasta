@@ -27,29 +27,25 @@ def order_corners(pts):
     pts = pts.reshape(4, 2).astype("float32")
 
     # CHANGED: The old sum/difference method could select the same corner twice
-    # when the A4 sheet was strongly rotated or diamond-shaped in the image.
-    # That caused triangle-looking debug outlines even when the paper was detected.
-    #
+    # background areas that reflected light caused boundary box distortion --> not rectangle shape
+
     # The safer approach is:
     # 1. Find the center of the four points.
     # 2. Sort all points around that center by angle.
     # 3. Rotate the ordered list so the first point is the image-space top-left corner.
-    #
-    # This preserves the correct polygon order without duplicating corners.
     center = np.mean(pts, axis=0)
     angles = np.arctan2(pts[:, 1] - center[1], pts[:, 0] - center[0])
     ordered = pts[np.argsort(angles)]
 
-    # CHANGED: Start from the most top-left-like point.
-    # Using x + y keeps the output compatible with the rest of the warp code,
-    # but it is now only used to choose the start point, not to identify every corner.
+    # CHANGED: Start from the most top-left-like point: tl, tr, br, bl
+    
     start_index = int(np.argmin(ordered[:, 0] + ordered[:, 1]))
     ordered = np.roll(ordered, -start_index, axis=0)
 
-    # CHANGED: Make sure the points are in [tl, tr, br, bl] order, not reversed.
+    # CHANGED: Make sure the points are in tl, tr, br, bl order
     # In image coordinates, y grows downward. For the expected order, the signed
-    # polygon area should be positive. If it is negative, reverse the direction
-    # while keeping the same first corner.
+    # polygon area should be positive. If it is negative --> reverse the direction
+    # while keeping the same first corner
     signed_area = 0.0
     for i in range(4):
         x1, y1 = ordered[i]
@@ -517,8 +513,8 @@ def _corners_from_contour_or_rect(contour, rect, image_area):
                     ordered = order_corners(approx)
 
                     # CHANGED: Reject triangle-like results caused by duplicated or
-                    # collapsed corners before returning contour-based corners.
-                    # This keeps tilted plain A4 images from producing a fake triangle.
+                    # collapsed corners before returning contour (shape) based corners
+                    # This keeps tilted plain A4 images from producing a fake triangle
                     unique_corners = np.unique(ordered.astype("int32"), axis=0)
 
                     if len(unique_corners) == 4 and _quad_area(ordered) > image_area * 0.01:
