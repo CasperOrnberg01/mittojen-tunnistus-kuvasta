@@ -14,4 +14,4 @@ AS:
 Size is about 7.8 MB
 
 
-Notes: If problems encountered, think of pushing the model
+Notes: If problems encountered, think of pushing the model.

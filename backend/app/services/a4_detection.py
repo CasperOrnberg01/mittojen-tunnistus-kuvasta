@@ -1,7 +1,7 @@
 # app/services/a4_detection.py
 # A4 paper sheet detection logic
 # this file tries to find an A4 sized rectangle from an uploaded image
-# Note for future developments!! note changes clearly
+# Note for future developments!! note changes clearly!!
 
 import cv2
 import numpy as np
@@ -44,8 +44,8 @@ def order_corners(pts):
 
     # CHANGED: Make sure the points are in tl, tr, br, bl order
     # In image coordinates, y grows downward. For the expected order, the signed
-    # polygon area should be positive. If it is negative --> reverse the direction
-    # while keeping the same first corner
+    # polygon area should be positive. If it is negative --> reverse direction
+    # while keeping same first corner (tl)
     signed_area = 0.0
     for i in range(4):
         x1, y1 = ordered[i]
