@@ -1,0 +1,90 @@
+.preview-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.preview-card {
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.preview-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.preview-subtitle {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.preview-image {
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+.preview-info {
+  text-align: left;
+  margin-bottom: 30px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.preview-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.replace-btn {
+  padding: 12px 20px;
+  background: #e0e0e0;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.replace-btn:hover {
+  background: #d5d5d5;
+}
+
+.continue-btn {
+  padding: 12px 20px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.continue-btn:hover {
+  background: #43a047;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .preview-card {
+    padding: 30px;
+  }
+
+  .preview-image {
+    max-height: 300px;
+  }
+}

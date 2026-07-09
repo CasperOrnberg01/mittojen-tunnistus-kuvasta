@@ -5,6 +5,9 @@
 # import FastAPI framework
 from fastapi import FastAPI 
 
+ #Niko update - 
+from fastapi.middleware.cors import CORSMiddleware
+
 # import uploadd routes from app/routes/upload.py and rename it here from "router" --> "upload_router"
 from app.routes.upload import router as upload_router
 
@@ -32,6 +35,15 @@ from app.routes.upload_hand_landmarks_manual_debug import router as hand_landmar
 # Setting title for Swagger UI
 app = FastAPI(
     title="Image measurement API"
+)
+
+#Niko update - 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # можно указать ["http://localhost:5173"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Adding upload endpoints to the app
@@ -65,4 +77,3 @@ def root():
 
     # return simple confirmation as JSON so we know server is running
     return {"message": "API running"}
- 
