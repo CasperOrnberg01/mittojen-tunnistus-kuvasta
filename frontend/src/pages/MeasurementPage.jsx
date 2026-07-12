@@ -6,36 +6,27 @@ export default function MeasurementPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const file = location.state?.file;
+  const analysis = location.state?.analysis;
+  const isPreview = location.state?.preview;
+  const previewMessage = location.state?.message;
 
-
-  // Extracting data passed through React Router navigation state.
-  // These values are provided by ResultPage via navigate("/measurement", { state: {...} }).
-  const file = location.state?.file;          // Uploaded image file (Blob)
-  const analysis = location.state?.analysis;  // ⭐ Real backend analysis data (JSON)
-  const isPreview = location.state?.preview;  // Preview mode flag (boolean)
- 
-  // Useful for verifying that navigation state is correctly forwarded.
-  console.log("📏 MeasurementPage received analysis:", analysis);
-  const previewMessage = location.state?.message; // Preview message text (string)
+  useEffect(() => {
+    console.log("📏 MeasurementPage received analysis:", analysis);
+  }, [analysis]);
 
 
   const [imageURL, setImageURL] = useState(null);
 
-  // Create a temporary URL for the uploaded image so it can be displayed.
-  // URL.createObjectURL() converts the File object into a browser‑readable URL.
   useEffect(() => {
     if (!file) return;
 
     const url = URL.createObjectURL(file);
     setImageURL(url);
 
-    // Cleanup: revoke URL when component unmounts.
-    // Prevents memory leaks caused by unused object URLs.
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  // Fallback: if user opened this page directly (without uploading an image).
-  // This prevents the page from breaking when accessed without navigation state.
   if (!file || !analysis) {
     return (
       <div className="measurement-container">
@@ -50,36 +41,36 @@ export default function MeasurementPage() {
     );
   }
 
-  // ⭐ The backend response is used directly as measurement results.
-  // No transformation is needed — the backend already returns final values.
   const results = analysis;
 
   return (
     <div className="measurement-container">
 
-      {/* Preview mode banner */}
-      {/* Displayed only when the user is in preview mode (before final confirmation). */}
       {isPreview && (
         <div className="preview-banner">
           <strong>Preview mode:</strong> {previewMessage}
         </div>
       )}
 
-      {/* Left side: image + title */}
-      {/* Shows the uploaded hand image and basic page description. */}
       <div className="measurement-left">
         <h1 className="measurement-title">Your hand measurement</h1>
         <p className="measurement-subtitle">
           Based on your uploaded photo, here are your hand dimensions.
         </p>
 
-        {imageURL && (
-          <img src={imageURL} alt="Hand" className="measurement-image" />
+        {results.debugImageBase64 ? (
+          <img
+            src={`data:image/jpeg;base64,${results.debugImageBase64}`}
+            alt="Processed hand"
+            className="measurement-image"
+          />
+        ) : (
+          imageURL && (
+            <img src={imageURL} alt="Hand" className="measurement-image" />
+          )
         )}
       </div>
 
-      {/* Right side: measurement results */}
-      {/* All values come directly from backend analysis JSON. */}
       <div className="measurement-right">
         <div className="result-card">
           <h2>Hand details</h2>
@@ -95,7 +86,7 @@ export default function MeasurementPage() {
           </div>
 
           <div className="result-row">
-            <span>Palm length:</span>
+            <span>Hand length:</span>
             <strong>{results.palmLength} mm</strong>
           </div>
 
@@ -124,9 +115,16 @@ export default function MeasurementPage() {
           </div>
         </div>
 
-        {/* Placeholder button for future e‑commerce integration */}
         <button className="buy-btn">
           Go to buy gloves
+        </button>
+
+        {/* button for buying gloves */}
+        <button
+          className="buy-btn"
+          onClick={() => navigate("/")}
+        >
+          Choose another photo
         </button>
       </div>
     </div>

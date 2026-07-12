@@ -20,7 +20,7 @@ from app.services.debug_overlay import draw_a4_overlay, encode_image_jpeg
 router = APIRouter()
 
 # Create a POST endpoint at /upload/debug
-# responses tells Swagger that a successful response is an image/jpe
+# responses tells Swagger that a successful response is an image/jpeg
 # response_class=Response tells FastAPI not to automatically convert the result to JSON.
 @router.post(
     "/upload/debug",
@@ -48,14 +48,12 @@ async def upload_debug(file: UploadFile = File(...)):
             status_code=415,
             detail=f"Unsupported: {file.content_type}"
         )
-    
     # Read the uploaded image into memory as bytes
     contents = await file.read()
 
     # Reject empty files before OpenCV tries to decode them
     if not contents:
         raise HTTPException(status_code=400, detail="Empty file")
-
 
     # "decoding" image
     # Convert the raw bytes into a NumPy array
@@ -69,7 +67,6 @@ async def upload_debug(file: UploadFile = File(...)):
     # If OpenCV cannot decode the upload, it returns None
     if image is None:
         raise HTTPException(status_code=422, detail="Could not decode image")
-
 
     # Check image quality
     # This does not block A4 detection, it only adds debug information and warnings
@@ -89,7 +86,14 @@ async def upload_debug(file: UploadFile = File(...)):
     # encode the annotated OpenCV image as JPEG bytes
     jpeg_bytes = encode_image_jpeg(annotated)
 
-    
+    # Extract A4 corners from detect_a4 output
+    # detect_a4 returns corners in "corners_px" in order: tl, tr, br, bl
+    corners = a4_result.get("corners_px", [])
+
+    # Helper to format corner arrays into "x,y"
+    def fmt(pt):
+        return ",".join(map(str, pt)) if pt else ""
+
     # Return the JPEG directly to Swagger/browser
     # Extra headers are useful for curl, frontend debugging, or quick inspection
     return Response(
@@ -103,5 +107,11 @@ async def upload_debug(file: UploadFile = File(...)):
             "X-A4-Found":      str(a4_result.get("a4_found", False)),
             "X-Quality-OK":    str(quality.get("acceptable", False)),
             "X-Quality-Warns": "; ".join(quality.get("warnings", [])) or "none",
+
+            # NEW: send A4 corners to frontend (correct source: corners_px)
+            "X-A4-Top-Left": fmt(corners[0] if len(corners) > 0 else []),
+            "X-A4-Top-Right": fmt(corners[1] if len(corners) > 1 else []),
+            "X-A4-Bottom-Right": fmt(corners[2] if len(corners) > 2 else []),
+            "X-A4-Bottom-Left": fmt(corners[3] if len(corners) > 3 else []),
         }
     )

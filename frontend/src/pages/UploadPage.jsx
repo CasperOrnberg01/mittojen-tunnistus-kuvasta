@@ -5,57 +5,70 @@ import "../styles/upload.css";
 export default function UploadPage() {
   const navigate = useNavigate();
 
-  // Main function — handles file selection and sends the file to the backend.
+  // Convert ArrayBuffer → Base64
+  function arrayBufferToBase64(buffer) {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+
+    return window.btoa(binary);
+  }
+
   async function handleSelect(file) {
-    console.log("📤 Sending file to backend:", file);
+    console.log(" Sending file to backend:", file);
 
     const formData = new FormData();
     formData.append("file", file);
 
-    // ⭐ IMPORTANT: use the correct endpoint that performs hand measurement
     const response = await fetch("http://127.0.0.1:8000/upload/hand-landmarks-debug", {
       method: "POST",
       body: formData,
     });
 
-    // ⭐ The endpoint returns JPEG, not JSON.
-    // Measurements are inside HTTP headers.
+    // Read headers
     const approxPalmWidth = response.headers.get("X-Approx-Palm-Width-MM");
     const approxHandLength = response.headers.get("X-Approx-Hand-Length-MM");
     const handFound = response.headers.get("X-Hand-Found");
     const a4Found = response.headers.get("X-A4-Found");
 
-    console.log("📥 Backend headers:", {
+    console.log(" Backend headers:", {
       approxPalmWidth,
       approxHandLength,
       handFound,
       a4Found
     });
 
-    // ⭐ Build analysis object manually
+    // Convert backend image to Base64
+    const rawBuffer = await response.arrayBuffer();
+    const debugImageBase64 = arrayBufferToBase64(rawBuffer);
+
+    // Build analysis object
     const analysis = {
       palmWidth: approxPalmWidth ? Number(approxPalmWidth) : null,
       palmLength: approxHandLength ? Number(approxHandLength) : null,
       handType: handFound === "True" ? "Detected" : "Not detected",
       confidence: handFound === "True" ? 100 : 0,
 
-      // Temporary glove size logic (you can replace later)
       euSize: approxPalmWidth ? Math.round(Number(approxPalmWidth) / 10) : "N/A",
       usSize: approxPalmWidth ? Math.round(Number(approxPalmWidth) / 12) : "N/A",
       fit: "Regular",
 
-      // Debug image (base64)
-      debugImageBase64: await response.arrayBuffer()
+      //  Flags for ResultPage
+      a4Found: a4Found === "True",
+      handFound: handFound === "True",
+
+      //  Backend image
+      debugImageBase64
     };
 
-    console.log("📥 Final analysis object:", analysis);
+    console.log(" Final analysis object:", analysis);
 
-    // Navigate to PreviewPage and pass file + analysis
     navigate("/preview", {
-      state: {
-        file,
-        analysis
-      }
+      state: { file, analysis }
     });
   }
 

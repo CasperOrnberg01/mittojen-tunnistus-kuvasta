@@ -1,3 +1,7 @@
+/* ===========================
+   RESULT PAGE LAYOUT
+   =========================== */
+
 .result-container {
   display: flex;
   gap: 60px;
@@ -31,6 +35,23 @@
   object-fit: contain;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* BACK BUTTON */
+.back-btn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+  background: #e0e0e0;
 }
 
 /* RIGHT SIDE */
@@ -68,13 +89,21 @@
   border-left: 4px solid #4caf50;
 }
 
+.status-item.fail {
+  border-left: 4px solid #f44336;
+}
+
 .status-icon {
   font-size: 20px;
   font-weight: 700;
   color: #4caf50;
 }
 
-/* BUTTON */
+.status-item.fail .status-icon {
+  color: #f44336;
+}
+
+/* Calculate button */
 .calculate-btn {
   padding: 14px 24px;
   background: #6a4dfd;
@@ -102,4 +131,37 @@
   .result-right {
     text-align: center;
   }
+}
+
+/* ===========================
+   MANUAL CALIBRATION BUTTON
+   =========================== */
+
+.manual-btn {
+  background: linear-gradient(135deg, #4a90e2, #357ab8);
+  color: white;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.manual-btn:hover {
+  background: linear-gradient(135deg, #5aa0f2, #3e86c7);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.manual-btn:active {
+  transform: translateY(0px);
+}
+
+.manual-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
 }

@@ -54,6 +54,10 @@ app.add_middleware(
         "X-Hand-Found",
         "X-Approx-Hand-Length-MM",
         "X-Approx-Palm-Width-MM",
+        "X-A4-Top-Left",
+        "X-A4-Top-Right",
+        "X-A4-Bottom-Right",
+        "X-A4-Bottom-Left",
     ],
 )
 

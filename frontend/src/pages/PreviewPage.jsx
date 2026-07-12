@@ -2,25 +2,45 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/preview.css";
 
+/**
+ * PreviewPage
+ * -----------
+ * Displays:
+ *  - preview of the uploaded image
+ *  - basic file information
+ * Allows user to continue to the ResultPage.
+ */
+
 export default function PreviewPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
   // Extracting data passed from UploadPage
   const file = location.state?.file;            // Uploaded image file (Blob)
-  const analysis = location.state?.analysis;    // ⭐ Backend analysis data
+  const analysis = location.state?.analysis;    // Backend analysis data
 
   const [imageURL, setImageURL] = useState(null);
 
-  // Create a temporary URL for the uploaded image so it can be displayed
+  /**
+   * Log analysis only once when it changes.
+   * Prevents console spam caused by React re-renders.
+   */
   useEffect(() => {
-    // If user opened this page directly without uploading a file → redirect
+    if (analysis) {
+      console.log("PreviewPage received analysis:", analysis);
+    }
+  }, [analysis]);
+
+  /**
+   * Create a temporary URL for the uploaded image so it can be displayed.
+   * If user opens this page directly → redirect to upload page.
+   */
+  useEffect(() => {
     if (!file) {
       navigate("/");
       return;
     }
 
-    // Convert File object into a browser‑readable temporary URL
     const url = URL.createObjectURL(file);
     setImageURL(url);
 
@@ -28,20 +48,22 @@ export default function PreviewPage() {
     return () => URL.revokeObjectURL(url);
   }, [file, navigate]);
 
-  // Replace image → return to upload page
+  /**
+   * Replace image → return to upload page
+   */
   function handleReplace() {
     navigate("/");
   }
 
-  // Continue → pass file + backend analysis to ResultPage
+  /**
+   * Continue → pass file + backend analysis to ResultPage
+   */
   function handleContinue() {
-    console.log("🔍 PreviewPage received analysis:", analysis);
-
     navigate("/result", {
       state: {
         file,
-        analysis
-      }
+        analysis,
+      },
     });
   }
 

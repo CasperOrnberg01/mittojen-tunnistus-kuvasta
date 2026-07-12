@@ -1,0 +1,91 @@
+/* ===========================
+   CALIBRATION MODAL
+   =========================== */
+
+.calibration-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.calibration-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.calibration-canvas {
+  display: block;
+  border: 2px solid #333;
+  position: relative;
+  z-index: 10;
+}
+
+/* ===========================
+   MODAL BUTTONS
+   =========================== */
+
+.modal-buttons {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+/* Cancel — мягкая, аккуратная */
+.modal-btn-cancel {
+  background: #f7f7f7;
+  color: #444;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.modal-btn-cancel:hover {
+  background: #efefef;
+  border-color: #c8c8c8;
+  transform: translateY(-1px);
+}
+
+.modal-btn-cancel:active {
+  transform: translateY(0px);
+}
+
+/* Save — современная зелёная кнопка */
+.modal-btn-save {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+  padding: 12px 26px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.modal-btn-save:hover {
+  background: linear-gradient(135deg, #34d97c, #2bb96a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.modal-btn-save:active {
+  transform: translateY(0px);
+}
