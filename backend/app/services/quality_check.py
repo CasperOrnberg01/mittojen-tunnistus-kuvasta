@@ -100,8 +100,7 @@ def check_tilt(image):
     edges   = cv2.Canny(gray, 50, 150)
 
     # Detect line segments using the probabilistic Hough transform
-    # !replaced with standard HoughLines
-    lines = cv2.HoughLines(
+    lines = cv2.HoughLinesP(
         edges,
 
         # Distance resolution in pixels.
@@ -114,72 +113,82 @@ def check_tilt(image):
 
         # Minimum votes needed to accept a line
         # 80 filters out many weak/random texture lines
-        150
+        threshold=80,
+
+        # Minimum line length in pixels
+        # 60 ignores short noise lines but keeps meaningful paper/background edges
+        minLineLength=60,
+
+        # Maximum gap in pixels allowed between line segments that should be connected
+        # 10 helps bridge small breaks in edges
+        maxLineGap=10
     )
 
 
     # If no lines are found, do not fail the image
     # No lines may simply mean the image has weak edges, and the blur/brightness checks
     if lines is None:
-        return {"tilt_angle": 0.0, "tilt_ok": True, "tilt_msg": "No lines found (assuming ok)", "warnings": ["no_lines_detected"]}
+        return {"tilt_deg": 0.0, "tilt_ok": True, "tilt_msg": "No lines found (assuming ok)"}
 
     # Store all detected line angles here
     angles = []
 
     # Loop through every detected line segment
     for line in lines:
-        try:
-            # HoughLines returns each line as [[rho, theta]]
-            rho, theta = line[0]
-        except Exception:
-            # Skip malformed entries (OpenCV version differences)
-            continue
+        # HoughLinesP returns each line as [[x1, y1, x2, y2]]
+        pt = line[0]
+
+        # If point is a single number, skip it
+        if isinstance(pt, (np.int32, np.int64, int, float)):
+            return {"tilt_deg": 0.0, "tilt_ok": True}
+
+        # If point has less than 4 coordinates, skip it
+        if len(pt) < 4:
+            return {"tilt_deg": 0.0, "tilt_ok": True}
+
+        x1, y1, x2, y2 = pt
+
 
         # Calculate the line angle in degrees
         # arctan2 gives the angle of the line direction
         # abs() makes negative angles positive
-        angle_deg = float(theta * 180.0 / np.pi)
+        angle = abs(np.degrees(np.arctan2(y2 - y1, x2 - x1)))
 
-        # Normalize angles into the 0-90 degree range
+
+         # Normalize angles into the 0-90 degree range
         # Example: 120 degrees becomes 60 degrees because it is the same line direction
-        if angle_deg > 90:
-            angle_deg -= 180
+        if angle > 90:
+            angle = 180 - angle
 
         # Save the normalized line angle
-        angles.append(angle_deg)
+        angles.append(angle)
 
-    # No valid angles
-    if len(angles) == 0:
-        return {
-            "tilt_angle": 0.0,
-            "tilt_ok": True,
-            "tilt_msg": "No valid lines, assuming OK",
-            "warnings": ["no_valid_lines"],
-        }
-
+    
     # Use the median angle instead of the average
     # Median is more robust when a few wrong/noisy lines are detected
-    avg_angle = float(np.mean(angles))
+    tilt = float(np.median(angles))
+
 
     # Convert the line angle into "tilt away from horizontal or vertical"
     # A paper edge can be horizontal (0 degrees) or vertical (90 degrees)
     # We use the closest of those two directions as the reference
-    tilt_from_horizontal = abs(avg_angle)
+    if tilt < 45:
+        tilt_from_horizontal = abs(tilt - 0)
+    else:
+        tilt_from_horizontal = abs(90 - tilt)
 
     # Check whether the estimated tilt is within the allowed limit
-    tilt_ok = tilt_from_horizontal < 10.0
+    ok = tilt_from_horizontal <= TILT_MAX_DEG
 
     # Build a readable result message
-    msg = "ok" if tilt_ok else f"{avg_angle:.1f} deg too tilted"
+    msg = "ok" if ok else f"Camera angle too steep ({tilt_from_horizontal:.1f} deg > {TILT_MAX_DEG})"
 
     # Return the tilt estimate and status
     return {
-        "tilt_angle": avg_angle,
-        "tilt_ok": tilt_ok,
-        "tilt_msg": msg,
-        "warnings": [],
+        "tilt_deg": round(tilt_from_horizontal, 1),
+        "tilt_ok": ok,
+        "tilt_msg": msg
     }
-
 
 
 def assess_image_quality(image):

@@ -2,6 +2,8 @@
 # Visual debug endpoint
 # this endpoint returns JPEG image with A4 detection information drawn on top
 
+
+
 import cv2 # cv2 is OpenCV, used here to decode uploaded image
 import numpy as np # numpy is used to convert raw upload bytes into an array that OpenCV can read
 
@@ -81,6 +83,10 @@ async def upload_debug(file: UploadFile = File(...)):
     # Green means A4 found and quality acceptable
     # Yellow means A4 found but quality weak
     # Red means A4 not found
+    
+    print("DEBUG A4:", a4_result)
+    print("DEBUG QUALITY:", quality)
+
     annotated = draw_a4_overlay(image, a4_result, quality_result=quality)
 
     # encode the annotated OpenCV image as JPEG bytes
@@ -96,7 +102,7 @@ async def upload_debug(file: UploadFile = File(...)):
 
     # Return the JPEG directly to Swagger/browser
     # Extra headers are useful for curl, frontend debugging, or quick inspection
-    return Response(
+    response = Response(
         content=jpeg_bytes,
         media_type="image/jpeg",
         headers={
@@ -115,3 +121,9 @@ async def upload_debug(file: UploadFile = File(...)):
             "X-A4-Bottom-Left": fmt(corners[3] if len(corners) > 3 else []),
         }
     )
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    response.headers["Access-Control-Expose-Headers"] = "*"
+
+    return response
