@@ -1,4 +1,4 @@
-# Project Situation Report
+# Project Situation Report July
 
 ## General overview
 
@@ -118,3 +118,21 @@ Now also included a manual calibration for reference object, if automatic one fa
  Palm width accuracy: currently from pinky finger's "knuckle" to index finger's "knuckle". Later improvement will focus on improving the detection accuracy by using possibly contours or masks to assist.
 
  Frontend: UI improvements, make it more "aesthetic" and user friendly. Also keep responsivness in mind.
+
+
+## Current user flow in images
+
+![Starting page](images/userflow1.jpg)
+
+
+![Preview choosed photo](images/userflow2.jpg)
+
+
+![Image analysis page- User chooses whether he/she is satisfied with automatic det. results](images/userflow3.jpg)
+
+
+![Final result page of measurements](images/userflow4.jpg)
+
+
+![Manual calibration](images/userflow5.jpg)
+
