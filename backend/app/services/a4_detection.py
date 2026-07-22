@@ -1,17 +1,15 @@
 # app/services/a4_detection.py
 # A4 paper sheet detection logic
-# Improved version: new import + func. detect_a4() sligthly modified + new helper functions
+# Improved version: new import (itertools) + func. detect_a4() sligthly modified + new helper functions
 # Note for future developments!! note changes clearly!!
 
 # New import, to generate combinations of four detected corner points
 import itertools
 
-import cv2
-import numpy as np
-
+import cv2 # OpenCV
+import numpy as np #Numpy lib
 
 # A4 aspect ratio reference 297mm / 210mm = 1.414...
-# A4 measures: 210x297mm
 A4_RATIO = 297 / 210
 
 
@@ -29,7 +27,6 @@ def order_corners(pts):
     # astype("float32") is required by OpenCV perspective transform functions
     pts = pts.reshape(4, 2).astype("float32")
 
-      
     #Find center of 4 points, sort points around that center by angle
     # -> rotate ordered list so first point is the image space TL corner
     center = np.mean(pts, axis=0)
@@ -456,9 +453,7 @@ def _detect_a4_by_visible_corner_fallback(image):
 
 
 def _visible_corner_geometry_score(corners, image_shape):
-    """
-    New fast geometry filter used before consuming mask andcontrast scoring
-    """
+    """New fast geometry filter used before consuming mask andcontrast scoring"""
 
     h, w = image_shape
     image_area = h * w
@@ -928,7 +923,6 @@ def _detect_a4_by_paper_mask_fallback(image):
     return {"a4_found": False}
 
 
-
 def _create_adaptive_paper_mask(image):
     """
     Create a whitepaper likelihood mask using image related brightness and saturation
@@ -1062,9 +1056,7 @@ def _corners_from_contour_or_rect(contour, rect, image_area):
 
 
 def _quad_candidates_from_hull(hull):
-    """
-    Build possible quadrilateral candidates from a papermask hull
-    """
+    """Build possible quadrilateral candidates from a papermask hull"""
 
     candidates = []
     perimeter = cv2.arcLength(hull, True)
@@ -1196,9 +1188,7 @@ def _score_paper_quad(image_shape, raw_mask, cleaned_mask, corners, source):
 
 
 def _corner_support_score(mask, corners):
-    """
-    Measure how much whitepaper evidence exists near each proposed corner
-    """
+    """Measure how much whitepaper evidence exists near each proposed corner"""
 
     h, w = mask.shape[:2]
     radius = max(8, int(min(h, w) * 0.018))
@@ -1225,9 +1215,7 @@ def _corner_support_score(mask, corners):
 
 
 def _side_support_score(mask, corners):
-    """
-    Measure how much whitepaper evidence exists along the proposed A4 sides
-    """
+    """Measure how much whitepaper evidence exists along the proposed A4 sides"""
 
     h, w = mask.shape[:2]
     thickness = max(6, int(min(h, w) * 0.010))
@@ -1259,9 +1247,7 @@ def _side_support_score(mask, corners):
 
 
 def _is_valid_quad(corners, image_shape):
-    """
-    Validate that the corners form usable convex quadrilateral inside the image
-    """
+    """Validate that the corners form usable convex quadrilateral inside the image"""
 
     h, w = image_shape
     corners = corners.astype("float32")
@@ -1292,9 +1278,7 @@ def _is_valid_quad(corners, image_shape):
 
 
 def _quad_area(corners):
-    """
-    Calculate quadrilateral area in pixels
-    """
+    """Calculate quadrilateral area in pixels"""
 
     return abs(cv2.contourArea(corners.astype("float32").reshape(4, 1, 2)))
 
