@@ -31,6 +31,11 @@ from app.routes.upload_hand_landmarks_debug import router as hand_landmarks_debu
 from app.routes.upload_hand_landmarks_manual_debug import router as hand_landmarks_manual_debug_router
 #App hand segment testing!! ends
 
+# TEMPORARY PAPER MASK DEBUG ROUTE 19/7/26
+# This endpoint shows raw/cleaned paper masks to help tune A4 fallback detection
+from app.routes.upload_paper_mask_debug import router as paper_mask_debug_router
+
+
 # Create FastAPI-app
 # Setting title for Swagger UI
 app = FastAPI(
@@ -82,6 +87,11 @@ app.include_router(hand_landmarks_debug_router)
 
 app.include_router(hand_landmarks_manual_debug_router)
 #App hand segment testing!! ends
+
+
+# REGISTER TEMP. PAPER MASK DEBUG ENDPPOINT
+app.include_router(paper_mask_debug_router)
+
 
 
 # Define GET endpoint for root URL
