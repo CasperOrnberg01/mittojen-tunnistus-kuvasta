@@ -102,7 +102,11 @@ async def upload_hand_landmarks_debug(file: UploadFile = File(...)):
         )
 
     # Calculate rough measurement estimates from landmarks
-    measurement_result = estimate_hand_measurements(hand_result, scale)
+    measurement_result = estimate_hand_measurements(
+        hand_result,
+        scale,
+        warped_a4_image=warped
+    )
 
     # Draw debug overlay
     debug_image = draw_hand_landmarks_debug(
@@ -129,6 +133,20 @@ async def upload_hand_landmarks_debug(file: UploadFile = File(...)):
         headers["X-Approx-Palm-Width-MM"] = str(
             measurement_result["approx_palm_width_mm"]
         )
+
+        # Extra debug headers show whether the result came from real outer hand contour or original mcp landmark fallback
+        headers["X-Palm-Width-Method"] = measurement_result["palm_width_method"]
+        headers["X-Landmark-Palm-Width-MM"] = str(
+            measurement_result["landmark_palm_width_mm"]
+        )
+        headers["X-Hand-Mask-Found"] = str(
+            measurement_result.get("hand_mask_found", False)
+        )
+
+        if measurement_result.get("outer_palm_width_mm") is not None:
+            headers["X-Outer-Palm-Width-MM"] = str(
+                measurement_result["outer_palm_width_mm"]
+            )
 
     return Response(
         content=jpeg_bytes,

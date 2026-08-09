@@ -115,8 +115,8 @@ async def upload_hand_landmarks_manual_debug(
             detail=f"MediaPipe hand landmark detection failed: {str(e)}"
         )
 
-    # Calculate rough measurement estimates from landmarks
-    measurement_result = estimate_hand_measurements(hand_result, scale)
+    # Calculate rough measurement estimates from landmarks, added warped a4 so hand mask segmentation and outer contour palm width meas. can run
+    measurement_result = estimate_hand_measurements(hand_result, scale, warped_a4_image=warped)
 
     # Draw debug overlay on the warped A4 image
     debug_image = draw_hand_landmarks_debug(
