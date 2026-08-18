@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CanvasOverlay from "./CanvasOverlay";
 import "../styles/calibration.css";
+import API_BASE_URL from "../config/api"; // new import for static web app
 
 export default function ManualCalibrationModal({
   file,
@@ -41,7 +42,7 @@ export default function ManualCalibrationModal({
     formData.append("bottom_left_y", corners.bottomLeft.y);
 
     const response = await fetch(
-      "http://127.0.0.1:8000/upload/hand-landmarks-manual-debug",
+      `${API_BASE_URL}/upload/hand-landmarks-manual-debug`,  // old local "http://127.0.0.1:8000/upload/hand-landmarks-manual-debug"
       {
         method: "POST",
         body: formData,

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import UploadZone from "../components/UploadZone";
 import "../styles/upload.css";
+import API_BASE_URL from "../config/api";  // new import for static web app
 
 export default function UploadPage() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function UploadPage() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch("http://127.0.0.1:8000/upload/hand-landmarks-debug", {
+    const response = await fetch(`${API_BASE_URL}/upload/hand-landmarks-debug`, {    // old local "http://127.0.0.1:8000/upload/hand-landmarks-debug"
       method: "POST",
       body: formData,
     });
