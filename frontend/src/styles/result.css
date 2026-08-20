@@ -1,34 +1,41 @@
-/* ===========================
-   RESULT PAGE LAYOUT
-   =========================== */
-
+/* Layout container for result page */
 .result-container {
   display: flex;
-  gap: 60px;
-  padding: 60px 40px;
-  justify-content: center;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px 30px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* LEFT SIDE */
+/* Top section with title, status, buttons */
+.result-top {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Left column with image and title (no longer used as a column, but kept for compatibility) */
 .result-left {
   flex: 1;
   max-width: 520px;
 }
 
+/* Main result title */
 .result-title {
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 10px;
 }
 
+/* Subtitle under main title */
 .result-subtitle {
   color: #666;
   font-size: 16px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
+/* Debug image preview + original image preview */
 .result-image {
   width: 100%;
   max-height: 420px;
@@ -37,11 +44,11 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* BACK BUTTON */
+/* Back button (local style, kept unchanged) */
 .back-btn {
-  margin-top: 20px;
+  margin-top: 10px;
   padding: 12px 20px;
-  background: #f0f0f0;
+  background: #e6c45f;
   border: 1px solid #ccc;
   border-radius: 10px;
   cursor: pointer;
@@ -54,18 +61,20 @@
   background: #e0e0e0;
 }
 
-/* RIGHT SIDE */
+/* Right column with status and details (kept for compatibility) */
 .result-right {
   flex: 1;
   max-width: 520px;
 }
 
+/* Section title inside right column */
 .result-section-title {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 20px;
 }
 
+/* List of status items */
 .status-list {
   display: flex;
   flex-direction: column;
@@ -73,6 +82,7 @@
   margin-bottom: 30px;
 }
 
+/* Single status item */
 .status-item {
   display: flex;
   align-items: center;
@@ -85,28 +95,32 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
+/* Success status indicator */
 .status-item.success {
   border-left: 4px solid #4caf50;
 }
 
+/* Failure status indicator */
 .status-item.fail {
   border-left: 4px solid #f44336;
 }
 
+/* Status icon */
 .status-icon {
   font-size: 20px;
   font-weight: 700;
   color: #4caf50;
 }
 
+/* Failure icon color override */
 .status-item.fail .status-icon {
   color: #f44336;
 }
 
-/* Calculate button */
+/* Calculate button (local style, kept unchanged) */
 .calculate-btn {
   padding: 14px 24px;
-  background: #6a4dfd;
+  background: #92c72f;
   color: white;
   border: none;
   border-radius: 10px;
@@ -120,23 +134,7 @@
   background: #5a3ee0;
 }
 
-/* MOBILE */
-@media (max-width: 768px) {
-  .result-container {
-    flex-direction: column;
-    padding: 20px;
-    gap: 40px;
-  }
-
-  .result-right {
-    text-align: center;
-  }
-}
-
-/* ===========================
-   MANUAL CALIBRATION BUTTON
-   =========================== */
-
+/* Manual calibration button (local style, kept unchanged) */
 .manual-btn {
   background: linear-gradient(135deg, #4a90e2, #357ab8);
   color: white;
@@ -164,4 +162,35 @@
   background: #cccccc;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+/* Bottom row with two images side-by-side */
+.result-images-row {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.result-images-row .result-image {
+  max-width: 45%;
+  height: auto;
+}
+
+/* Responsive layout for mobile screens */
+@media (max-width: 768px) {
+  .result-container {
+    padding: 20px;
+    gap: 30px;
+  }
+
+  .result-images-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .result-images-row .result-image {
+    max-width: 100%;
+  }
 }

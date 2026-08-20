@@ -1,3 +1,4 @@
+/* Container for modal action buttons */
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
@@ -5,7 +6,7 @@
   margin-top: 24px;
 }
 
-/* Cancel — мягкая, аккуратная */
+/* Cancel button (local style, kept unchanged) */
 .modal-btn-cancel {
   background: #f7f7f7;
   color: #444;
@@ -29,7 +30,7 @@
   transform: translateY(0px);
 }
 
-/* Save — современная зелёная кнопка */
+/* Save button (local style, kept unchanged) */
 .modal-btn-save {
   background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: white;

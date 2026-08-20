@@ -3,53 +3,29 @@ import { useEffect, useState } from "react";
 import ManualCalibrationModal from "../components/ManualCalibrationModal";
 import "../styles/result.css";
 
-/**
- * ResultPage
- * -----------
- * Displays:
- *  - original uploaded image
- *  - A4 debug overlay image
- *  - detection status (A4, hand, measurements)
- *  - auto‑detected A4 corners
- *  - manual calibration modal
- *
- * This page receives:
- *  - file (original uploaded image)
- *  - analysis (hand measurement results)
- *
- * It also fetches:
- *  - A4 debug image from backend
- *  - A4 auto‑detected corners from response headers
- */
-
+/* Result page: shows uploaded image, debug image, detection status, and calibration modal */
 export default function ResultPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Data passed from previous page
+  /* Data passed from previous page */
   const file = location.state?.file;
   const analysis = location.state?.analysis;
 
-  // Local state
+  /* Local state */
   const [imageURL, setImageURL] = useState(null);
   const [a4DebugBase64, setA4DebugBase64] = useState(null);
   const [autoCorners, setAutoCorners] = useState(null);
   const [showCalibrationModal, setShowCalibrationModal] = useState(false);
 
-  /**
-   * Log analysis only when it changes.
-   * Prevents console spam caused by React re-renders.
-   */
+  /* Log analysis when it changes */
   useEffect(() => {
     if (analysis) {
       console.log("FULL ANALYSIS:", analysis);
     }
   }, [analysis]);
 
-  /**
-   * Convert ArrayBuffer → Base64 string
-   * Used for converting backend JPEG debug image.
-   */
+  /* Converts ArrayBuffer to Base64 string */
   function arrayBufferToBase64(buffer) {
     let binary = "";
     const bytes = new Uint8Array(buffer);
@@ -61,10 +37,7 @@ export default function ResultPage() {
     return window.btoa(binary);
   }
 
-  /**
-   * Create a temporary URL for the uploaded image
-   * and clean it up when component unmounts.
-   */
+  /* Create temporary URL for uploaded image */
   useEffect(() => {
     if (!file) return;
 
@@ -74,10 +47,7 @@ export default function ResultPage() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  /**
-   * Fetch A4 debug image + A4 corner headers from backend.
-   * This runs only once when the file changes.
-   */
+  /* Fetch A4 debug image + corner headers */
   useEffect(() => {
     async function loadA4Debug() {
       if (!file) return;
@@ -90,18 +60,14 @@ export default function ResultPage() {
         body: formData,
       });
 
-      /**
-       * Log all headers once (clean, readable)
-       */
+      /* Log all headers */
       const headerObj = {};
       response.headers.forEach((value, key) => {
         headerObj[key] = value;
       });
-      console.log(" Backend headers:", headerObj);
+      console.log("Backend headers:", headerObj);
 
-      /**
-       * Read auto-detected A4 corners from headers
-       */
+      /* Read auto-detected A4 corners */
       const tl = response.headers.get("x-a4-top-left");
       const tr = response.headers.get("x-a4-top-right");
       const br = response.headers.get("x-a4-bottom-right");
@@ -116,45 +82,35 @@ export default function ResultPage() {
           bottom_right: br.split(",").map(Number),
           bottom_left: bl.split(",").map(Number),
         };
-
         setAutoCorners(parsed);
       } else {
-        console.warn("⚠ A4 corners not found in headers");
+        console.warn("A4 corners not found in headers");
       }
 
-      /**
-       * Read JPEG debug image body
-       */
+      /* Read JPEG debug image */
       const buffer = await response.arrayBuffer();
       const base64 = arrayBufferToBase64(buffer);
-
       setA4DebugBase64(base64);
     }
 
     loadA4Debug();
   }, [file]);
 
-  /**
-   * Log auto corners only when they change
-   */
+  /* Log auto corners when they change */
   useEffect(() => {
     if (autoCorners) {
       console.log("PARSED AUTO CORNERS:", autoCorners);
     }
   }, [autoCorners]);
 
-  /**
-   * Log debug image only when it loads
-   */
+  /* Log debug image when loaded */
   useEffect(() => {
     if (a4DebugBase64) {
       console.log("A4 debug loaded, base64 length:", a4DebugBase64.length);
     }
   }, [a4DebugBase64]);
 
-  /**
-   * If no data was passed, show fallback screen
-   */
+  /* Fallback screen if no data */
   if (!file || !analysis) {
     return (
       <div className="result-container">
@@ -169,7 +125,7 @@ export default function ResultPage() {
     );
   }
 
-  // Detection flags
+  /* Detection flags */
   const a4Ok = analysis?.a4Found === true;
   const handOk = analysis?.handFound === true;
   const measurementOk =
@@ -181,32 +137,11 @@ export default function ResultPage() {
   return (
     <div className="result-container">
 
-      {/* LEFT SIDE — images */}
-      <div className="result-left">
+      {/* Top section: text + status + actions */}
+      <div className="result-top">
         <h1 className="result-title">Image analysis</h1>
         <p className="result-subtitle">Your photo has been processed.</p>
 
-        {imageURL && (
-          <img src={imageURL} alt="Uploaded" className="result-image" />
-        )}
-
-        {a4DebugBase64 ? (
-          <img
-            src={`data:image/jpeg;base64,${a4DebugBase64}`}
-            alt="A4 debug"
-            className="result-image"
-          />
-        ) : (
-          <p>Loading A4 debug image...</p>
-        )}
-
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          ← Back
-        </button>
-      </div>
-
-      {/* RIGHT SIDE — status + actions */}
-      <div className="result-right">
         <h2 className="result-section-title">Detection status</h2>
 
         <div className="status-list">
@@ -245,7 +180,28 @@ export default function ResultPage() {
           >
             Calibrate A4 manually
           </button>
+
+          <button className="back-btn" onClick={() => navigate(-1)}>
+            ← Back
+          </button>
         </div>
+      </div>
+
+      {/* Bottom section: two images on the same level */}
+      <div className="result-images-row">
+        {imageURL && (
+          <img src={imageURL} alt="Uploaded" className="result-image" />
+        )}
+
+        {a4DebugBase64 ? (
+          <img
+            src={`data:image/jpeg;base64,${a4DebugBase64}`}
+            alt="A4 debug"
+            className="result-image"
+          />
+        ) : (
+          <p>Loading A4 debug image...</p>
+        )}
       </div>
 
       {/* Manual calibration modal */}

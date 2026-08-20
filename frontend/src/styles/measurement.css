@@ -1,3 +1,4 @@
+/* Layout container for measurement page */
 .measurement-container {
   display: flex;
   gap: 60px;
@@ -7,24 +8,27 @@
   margin: 0 auto;
 }
 
-/* LEFT SIDE */
+/* Left column with image and title */
 .measurement-left {
   flex: 1;
   max-width: 520px;
 }
 
+/* Main measurement title */
 .measurement-title {
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 10px;
 }
 
+/* Subtitle under title */
 .measurement-subtitle {
   color: #666;
   font-size: 16px;
   margin-bottom: 30px;
 }
 
+/* Uploaded hand image preview */
 .measurement-image {
   width: 100%;
   max-height: 420px;
@@ -33,7 +37,7 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* RIGHT SIDE */
+/* Right column with measurement results */
 .measurement-right {
   flex: 1;
   max-width: 520px;
@@ -42,6 +46,7 @@
   gap: 30px;
 }
 
+/* Result card container */
 .result-card {
   background: #fff;
   padding: 30px;
@@ -49,11 +54,13 @@
   box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
 
+/* Title inside result card */
 .result-card h2 {
   font-size: 24px;
   margin-bottom: 20px;
 }
 
+/* Row inside result card */
 .result-row {
   display: flex;
   justify-content: space-between;
@@ -62,11 +69,12 @@
   color: #444;
 }
 
+/* Highlighted value inside result row */
 .result-row strong {
   font-weight: 600;
 }
 
-/* BUTTON */
+/* Buy button (local style, kept unchanged) */
 .buy-btn {
   padding: 14px 24px;
   background: #6a4dfd;
@@ -83,7 +91,7 @@
   background: #5a3ee0;
 }
 
-/* MOBILE */
+/* Responsive layout for mobile screens */
 @media (max-width: 768px) {
   .measurement-container {
     flex-direction: column;
@@ -95,6 +103,8 @@
     text-align: center;
   }
 }
+
+/* Preview mode banner */
 .preview-banner {
   background: #fff7d1;
   border-left: 4px solid #f0c200;

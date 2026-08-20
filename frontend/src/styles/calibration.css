@@ -1,7 +1,4 @@
-/* ===========================
-   CALIBRATION MODAL
-   =========================== */
-
+/* Fullscreen modal overlay */
 .calibration-modal {
   position: fixed;
   top: 0;
@@ -15,34 +12,35 @@
   z-index: 9999;
 }
 
+/* Modal content container */
 .calibration-content {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
   max-width: 90vw;
   max-height: 90vh;
-  overflow: auto;
+  overflow: auto; /* allows scrolling when content exceeds modal size */
 }
 
+/* Canvas used for calibration drawing */
 .calibration-canvas {
+  max-width: 80vw;   /* visually scales canvas to fit inside modal */
+  max-height: 80vh;
+  width: 100%;
+  height: auto;
   display: block;
-  border: 2px solid #333;
-  position: relative;
-  z-index: 10;
+  margin: 0 auto;    /* centers the canvas horizontally */
 }
 
-/* ===========================
-   MODAL BUTTONS
-   =========================== */
-
+/* Container for modal action buttons */
 .modal-buttons {
   margin-top: 24px;
   display: flex;
-  justify-content: flex-end;
-  gap: 14px;
+  justify-content: flex-end; /* aligns buttons to the right */
+  gap: 14px;                 /* spacing between buttons */
 }
 
-/* Cancel — мягкая, аккуратная */
+/* Cancel button */
 .modal-btn-cancel {
   background: #f7f7f7;
   color: #444;
@@ -66,7 +64,7 @@
   transform: translateY(0px);
 }
 
-/* Save — современная зелёная кнопка */
+/* Save button */
 .modal-btn-save {
   background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: white;

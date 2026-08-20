@@ -2,39 +2,25 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/preview.css";
 
-/**
- * PreviewPage
- * -----------
- * Displays:
- *  - preview of the uploaded image
- *  - basic file information
- * Allows user to continue to the ResultPage.
- */
-
+/* Preview page: shows uploaded image and basic file info */
 export default function PreviewPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Extracting data passed from UploadPage
-  const file = location.state?.file;            // Uploaded image file (Blob)
-  const analysis = location.state?.analysis;    // Backend analysis data
+  /* Data passed from UploadPage */
+  const file = location.state?.file;
+  const analysis = location.state?.analysis;
 
   const [imageURL, setImageURL] = useState(null);
 
-  /**
-   * Log analysis only once when it changes.
-   * Prevents console spam caused by React re-renders.
-   */
+  /* Log analysis when it changes */
   useEffect(() => {
     if (analysis) {
       console.log("PreviewPage received analysis:", analysis);
     }
   }, [analysis]);
 
-  /**
-   * Create a temporary URL for the uploaded image so it can be displayed.
-   * If user opens this page directly → redirect to upload page.
-   */
+  /* Create temporary URL for uploaded image */
   useEffect(() => {
     if (!file) {
       navigate("/");
@@ -44,20 +30,15 @@ export default function PreviewPage() {
     const url = URL.createObjectURL(file);
     setImageURL(url);
 
-    // Cleanup: revoke URL when component unmounts to avoid memory leaks
     return () => URL.revokeObjectURL(url);
   }, [file, navigate]);
 
-  /**
-   * Replace image → return to upload page
-   */
+  /* Replace image → go back to upload page */
   function handleReplace() {
     navigate("/");
   }
 
-  /**
-   * Continue → pass file + backend analysis to ResultPage
-   */
+  /* Continue → go to ResultPage with file + analysis */
   function handleContinue() {
     navigate("/result", {
       state: {
@@ -71,23 +52,24 @@ export default function PreviewPage() {
     <div className="preview-container">
       <div className="preview-card">
         <h1 className="preview-title">Preview your photo</h1>
+
         <p className="preview-subtitle">
           Make sure your hand is clearly visible and placed on an A4 sheet.
         </p>
 
-        {/* Display uploaded image preview */}
+        {/* Uploaded image preview */}
         {imageURL && (
           <img src={imageURL} alt="Uploaded preview" className="preview-image" />
         )}
 
-        {/* File information section */}
+        {/* File information */}
         <div className="preview-info">
           <p><strong>File name:</strong> {file?.name}</p>
           <p><strong>Size:</strong> {(file?.size / 1024 / 1024).toFixed(2)} MB</p>
           <p><strong>Type:</strong> {file?.type}</p>
         </div>
 
-        {/* Buttons: replace or continue */}
+        {/* Action buttons */}
         <div className="preview-buttons">
           <button className="replace-btn" onClick={handleReplace}>
             Replace image

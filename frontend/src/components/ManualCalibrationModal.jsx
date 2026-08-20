@@ -2,6 +2,7 @@ import { useState } from "react";
 import CanvasOverlay from "./CanvasOverlay";
 import "../styles/calibration.css";
 
+/* Manual calibration modal: allows user to select A4 corners manually */
 export default function ManualCalibrationModal({
   file,
   a4DebugBase64,
@@ -11,6 +12,7 @@ export default function ManualCalibrationModal({
 }) {
   const [corners, setCorners] = useState(null);
 
+  /* Show loading state if debug image is missing */
   if (!a4DebugBase64) {
     return (
       <div className="calibration-modal">
@@ -22,6 +24,7 @@ export default function ManualCalibrationModal({
     );
   }
 
+  /* Send selected corners to backend and build new analysis object */
   async function handleSave() {
     if (!corners) return;
 
@@ -83,12 +86,14 @@ export default function ManualCalibrationModal({
       <div className="calibration-content">
         <h2>Manual A4 Calibration</h2>
 
+        {/* Canvas overlay for selecting corners */}
         <CanvasOverlay
           imageBase64={a4DebugBase64}
-          autoCorners={autoCorners} 
+          autoCorners={autoCorners}
           onCornersSelected={(c) => setCorners(c)}
         />
 
+        {/* Modal buttons */}
         <div className="calibration-buttons">
           <button className="modal-btn-cancel" onClick={onClose}>
             Cancel

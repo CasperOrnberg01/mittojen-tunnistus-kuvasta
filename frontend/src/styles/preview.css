@@ -1,9 +1,11 @@
+/* Layout container for preview page */
 .preview-container {
   display: flex;
   justify-content: center;
   padding: 60px 20px;
 }
 
+/* Main preview card */
 .preview-card {
   background: #fff;
   padding: 40px;
@@ -14,18 +16,21 @@
   text-align: center;
 }
 
+/* Title inside preview card */
 .preview-title {
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 10px;
 }
 
+/* Subtitle under title */
 .preview-subtitle {
   color: #666;
   font-size: 16px;
   margin-bottom: 30px;
 }
 
+/* Uploaded image preview */
 .preview-image {
   width: 100%;
   max-height: 420px;
@@ -35,6 +40,7 @@
   margin-bottom: 20px;
 }
 
+/* File info section */
 .preview-info {
   text-align: left;
   margin-bottom: 30px;
@@ -42,12 +48,14 @@
   line-height: 1.6;
 }
 
+/* Buttons container */
 .preview-buttons {
   display: flex;
   gap: 20px;
   justify-content: center;
 }
 
+/* Replace button (local style, kept unchanged) */
 .replace-btn {
   padding: 12px 20px;
   background: #e0e0e0;
@@ -62,9 +70,10 @@
   background: #d5d5d5;
 }
 
+/* Continue button (local style, kept unchanged) */
 .continue-btn {
   padding: 12px 20px;
-  background: #4caf50;
+  background: #92c72f;
   color: white;
   border: none;
   border-radius: 10px;
@@ -78,7 +87,7 @@
   background: #43a047;
 }
 
-/* MOBILE */
+/* Responsive layout for mobile screens */
 @media (max-width: 768px) {
   .preview-card {
     padding: 30px;

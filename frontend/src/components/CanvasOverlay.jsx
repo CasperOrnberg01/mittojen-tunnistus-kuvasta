@@ -6,28 +6,28 @@ export default function CanvasOverlay({ imageBase64, autoCorners, onCornersSelec
   const canvasRef = useRef(null);
   const imgRef = useRef(null);
 
+  // Initialize corner points (auto-detected or default manual positions)
   const [points, setPoints] = useState(() => {
-  if (autoCorners) {
+    if (autoCorners) {
+      return {
+        topLeft:     { x: autoCorners.top_left[0],     y: autoCorners.top_left[1] },
+        topRight:    { x: autoCorners.top_right[0],    y: autoCorners.top_right[1] },
+        bottomRight: { x: autoCorners.bottom_right[0], y: autoCorners.bottom_right[1] },
+        bottomLeft:  { x: autoCorners.bottom_left[0],  y: autoCorners.bottom_left[1] },
+      };
+    }
+
     return {
-      topLeft:     { x: autoCorners.top_left[0],     y: autoCorners.top_left[1] },
-      topRight:    { x: autoCorners.top_right[0],    y: autoCorners.top_right[1] },
-      bottomRight: { x: autoCorners.bottom_right[0], y: autoCorners.bottom_right[1] },
-      bottomLeft:  { x: autoCorners.bottom_left[0],  y: autoCorners.bottom_left[1] },
+      topLeft: { x: 100, y: 100 },
+      topRight: { x: 300, y: 100 },
+      bottomRight: { x: 300, y: 400 },
+      bottomLeft: { x: 100, y: 400 },
     };
-  }
-
-  return {
-    topLeft: { x: 100, y: 100 },
-    topRight: { x: 300, y: 100 },
-    bottomRight: { x: 300, y: 400 },
-    bottomLeft: { x: 100, y: 400 },
-  };
-});
-
-
+  });
 
   const [dragging, setDragging] = useState(null);
 
+  // Load image and draw canvas whenever image or points change
   useEffect(() => {
     if (!imageBase64) return;
 
@@ -40,7 +40,7 @@ export default function CanvasOverlay({ imageBase64, autoCorners, onCornersSelec
     img.onload = () => {
       imgRef.current = img;
 
-      // Set REAL canvas size
+      // Set canvas to real image size
       canvas.width = img.width;
       canvas.height = img.height;
 
@@ -48,16 +48,18 @@ export default function CanvasOverlay({ imageBase64, autoCorners, onCornersSelec
     };
   }, [imageBase64, points]);
 
+  // Draw image, polygon and corner points
   function draw(ctx, img) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.drawImage(img, 0, 0);
 
-    ctx.fillStyle = "red";
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 3;
+    ctx.fillStyle = "red";      // manual corner points color
+    ctx.strokeStyle = "red";    // manual polygon color
+    ctx.lineWidth = 10;         // polygon thickness
 
     const p = points;
 
+    // Draw polygon connecting the four corners
     ctx.beginPath();
     ctx.moveTo(p.topLeft.x, p.topLeft.y);
     ctx.lineTo(p.topRight.x, p.topRight.y);
@@ -66,15 +68,18 @@ export default function CanvasOverlay({ imageBase64, autoCorners, onCornersSelec
     ctx.closePath();
     ctx.stroke();
 
+    // Draw draggable corner points
     Object.values(p).forEach((pt) => {
       ctx.beginPath();
-      ctx.arc(pt.x, pt.y, 8, 0, Math.PI * 2);
+      ctx.arc(pt.x, pt.y, 25, 0, Math.PI * 2); // point radius
       ctx.fill();
     });
 
+    // Send updated corner positions to parent
     onCornersSelected(points);
   }
 
+  // Convert mouse coordinates to canvas coordinates (accounting for CSS scaling)
   function getMousePos(e) {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
@@ -88,6 +93,7 @@ export default function CanvasOverlay({ imageBase64, autoCorners, onCornersSelec
     };
   }
 
+  // Detect if user clicked on a corner point
   function handleMouseDown(e) {
     const { x, y } = getMousePos(e);
 
@@ -95,6 +101,8 @@ export default function CanvasOverlay({ imageBase64, autoCorners, onCornersSelec
       const pt = points[key];
       const dx = pt.x - x;
       const dy = pt.y - y;
+
+      // Check if click is inside point radius
       if (dx * dx + dy * dy < 15 * 15) {
         setDragging(key);
         return;
@@ -102,6 +110,7 @@ export default function CanvasOverlay({ imageBase64, autoCorners, onCornersSelec
     }
   }
 
+  // Update point position while dragging
   function handleMouseMove(e) {
     if (!dragging) return;
 
@@ -113,6 +122,7 @@ export default function CanvasOverlay({ imageBase64, autoCorners, onCornersSelec
     }));
   }
 
+  // Stop dragging on mouse release
   function handleMouseUp() {
     setDragging(null);
   }

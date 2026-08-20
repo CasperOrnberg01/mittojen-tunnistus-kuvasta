@@ -1,10 +1,15 @@
+// React hooks for refs and local state
 import { useRef, useState } from "react";
 
 export default function UploadZone({ onSelect }) {
+  // Ref to hidden file input element
   const fileInputRef = useRef(null);
+  // Drag state for visual feedback
   const [isDragging, setIsDragging] = useState(false);
+  // Error message for invalid files
   const [error, setError] = useState("");
 
+  // Validates file type and size before upload
   function validateFile(file) {
     if (!file.type.startsWith("image/")) {
       setError("Only image files are allowed.");
@@ -18,6 +23,7 @@ export default function UploadZone({ onSelect }) {
     return true;
   }
 
+  // Handles file selection from input
   function handleFileSelect(e) {
     const file = e.target.files[0];
     if (file && validateFile(file)) {
@@ -25,6 +31,7 @@ export default function UploadZone({ onSelect }) {
     }
   }
 
+  // Handles file drop from drag & drop
   function handleDrop(e) {
     e.preventDefault();
     setIsDragging(false);
@@ -34,6 +41,7 @@ export default function UploadZone({ onSelect }) {
     }
   }
 
+  // Renders drag & drop zone and hidden file input
   return (
     <div className="upload-zone-wrapper">
       <div
@@ -50,6 +58,7 @@ export default function UploadZone({ onSelect }) {
         <p className="upload-title">Drag & drop your image</p>
         <p className="upload-subtitle">or click to select</p>
 
+        {/* Hidden file input triggered by click */}
         <input
           type="file"
           accept="image/*"
@@ -59,6 +68,7 @@ export default function UploadZone({ onSelect }) {
         />
       </div>
 
+      {/* Error message for invalid file selection */}
       {error && <p className="upload-error">{error}</p>}
     </div>
   );
