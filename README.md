@@ -2,6 +2,7 @@
 
 Image measurement application for estimating hand measurements from a single image.
 User places their hand on a A4 paper sheet, without covering any on the A4's corners (top left, top right, bottom right, bottom left)
+
 A4 sheet is used as known size reference object, allowing application to detect the hand and estimate hand length and palm width.
 
 
