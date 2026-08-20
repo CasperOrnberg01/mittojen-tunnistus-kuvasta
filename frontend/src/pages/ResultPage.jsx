@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ManualCalibrationModal from "../components/ManualCalibrationModal";
 import "../styles/result.css";
+import API_BASE_URL from "../config/api"; // new import for static web app
 
 /* Result page: shows uploaded image, debug image, detection status, and calibration modal */
 export default function ResultPage() {
@@ -55,7 +56,7 @@ export default function ResultPage() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch("http://127.0.0.1:8000/upload/debug", {
+      const response = await fetch(`${API_BASE_URL}/upload/debug`, {  // old local: "http://127.0.0.1:8000/upload/debug"
         method: "POST",
         body: formData,
       });

@@ -15,5 +15,4 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# MediaPipe model files are downloaded manually
-app/models/*.task
+# MediaPipe model included in git for Azure "app/models/*.task"

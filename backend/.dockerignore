@@ -1,0 +1,28 @@
+# Local Python virtual environment
+venv/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables / secrets
+.env
+
+# Git metadata
+.git/
+.gitignore
+
+# IDE files
+.vscode/
+
+# Test/cache files
+.pytest_cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

@@ -48,6 +48,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://handmeasurefrontend.z1.web.core.windows.net",  # Added azure storage frontend origin
     ],
     allow_credentials=False,
     allow_methods=["*"],
@@ -63,6 +64,12 @@ app.add_middleware(
         "X-A4-Top-Right",
         "X-A4-Bottom-Right",
         "X-A4-Bottom-Left",
+
+        # New measurement/debug headers
+        "X-Hand-Mask-Found",
+        "X-Landmark-Palm-Width-MM",
+        "X-Outer-Palm-Width-MM",
+        "X-Palm-Width-Method",
     ],
 )
 
