@@ -1,7 +1,8 @@
 # app/services/a4_detection.py
 # A4 paper sheet detection logic
 # Improved version: new import (itertools) + func. detect_a4() sligthly modified + new helper functions
-# Note for future developments!! note changes clearly!!
+# Current known flaws/bugs: papermask and visible corner fallback methods might give false A4 detections when no A4 in image->
+# Fixes have been tried, but they can affect some good A4 shots as well so for now, keeping logic the same
 
 # New import, to generate combinations of four detected corner points
 import itertools
