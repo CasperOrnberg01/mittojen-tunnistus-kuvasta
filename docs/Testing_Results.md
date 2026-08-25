@@ -72,7 +72,7 @@ In the table below, we compare the real world measurement to application's measu
 > Plain inner hand images are found also at [`images/`](images/)
 > Inner hand image results are found at [`result_images/`](result_images/).
 
-[Inner hand result](result_images/handinner3_result.jpg)
+![Inner hand result](result_images/handinner3_result.jpg)
 
 
 
