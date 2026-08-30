@@ -657,7 +657,7 @@ So its safe to say technical wise:
 - Convex hulls
 - `approxPolyDP`
 - `minAreaRect`
-- Shi-Tomasi corners
+- cv2.goodFeaturesToTrack corner detection
 - Four-point combinations
 - HSV / LAB paper masks
 - Sobel gradients
